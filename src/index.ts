@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { startPomodoro } from './commands/pomodoro.js';
+import { startPomodoro, editPomodoroSettings } from './commands/pomodoro.js';
 import { addTask, listTasks, completeTask } from './commands/task.js';
 import { addTopic, reviewTopics, listSrsStatus } from './commands/srs.js';
 import { showDashboard } from './commands/dashboard.js';
@@ -10,7 +10,7 @@ const program = new Command();
 program
   .name('studyos')
   .description('A distraction-free Study OS CLI for focus and long-term learning')
-  .version('1.0.0')
+  .version('1.1.0')
   .action(() => {
     showDashboard();
   });
@@ -24,11 +24,18 @@ program
   });
 
 // Pomodoro Command
-program
+const pomodoro = program
   .command('pomodoro')
-  .description('Start a 50/10 Pomodoro timer')
+  .description('Manage Pomodoro timer')
   .action(() => {
     startPomodoro();
+  });
+
+pomodoro
+  .command('set <work> <break>')
+  .description('Set Pomodoro work and break minutes')
+  .action((work, breakTime) => {
+    editPomodoroSettings(work, breakTime);
   });
 
 // Task Commands

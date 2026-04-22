@@ -28,6 +28,32 @@ export function showDashboard() {
   console.log(chalk.bold.white('                📚 MY STUDY OS DASHBOARD             '));
   console.log(chalk.bold.cyan('===================================================='));
 
+  // 0. Production Stats (New!)
+  console.log(chalk.bold.green('\n[ 🚀 PRODUCTION STATS - TODAY ]'));
+  const today = now.toISOString().split('T')[0];
+  const todayHistory = data.history.filter(h => h.timestamp.startsWith(today));
+  
+  const workSessions = todayHistory.filter(h => h.type === 'work');
+  const breakSessions = todayHistory.filter(h => h.type === 'break');
+  const tasksDone = todayHistory.filter(h => h.type === 'task');
+  const totalWorkMinutes = workSessions.reduce((sum, h) => sum + (h.duration || 0), 0);
+
+  const hours = Math.floor(totalWorkMinutes / 60);
+  const mins = totalWorkMinutes % 60;
+  
+  console.log(chalk.white(`  ⏱️  Study Time: `) + chalk.bold.green(`${hours}h ${mins}m`));
+  console.log(chalk.white(`  🎯 Focus Sessions: `) + chalk.bold.yellow(`${workSessions.length}`));
+  console.log(chalk.white(`  ✅ Tasks Finished: `) + chalk.bold.magenta(`${tasksDone.length}`));
+
+  // Simple progress bar for a 4-hour daily goal (240 mins)
+  const goalMinutes = 240; 
+  const progress = Math.min(totalWorkMinutes / goalMinutes, 1);
+  const barWidth = 30;
+  const filledWidth = Math.round(progress * barWidth);
+  const emptyWidth = barWidth - filledWidth;
+  const progressBar = chalk.green('█'.repeat(filledWidth)) + chalk.gray('░'.repeat(emptyWidth));
+  console.log(chalk.white(`  📊 Daily Goal: [${progressBar}] ${Math.round(progress * 100)}%`));
+
   // 1. Pomodoro Section (Quick Status)
   console.log(chalk.bold.yellow('\n[ 🍅 POMODORO STATUS ]'));
   console.log(chalk.white(' Ready to start a 50/10 session. Run: ') + chalk.cyan('studyos pomodoro'));

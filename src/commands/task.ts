@@ -39,6 +39,14 @@ export function completeTask(id: number) {
   }
   
   data.tasks[taskIndex].isDone = true;
+  
+  // Log to history
+  data.history.push({
+    type: 'task',
+    timestamp: new Date().toISOString(),
+    id: id
+  });
+  
   writeData(data);
   console.log(chalk.green(`Task marked as done: "${data.tasks[taskIndex].title}"`));
 }
